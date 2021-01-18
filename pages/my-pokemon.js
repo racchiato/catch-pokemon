@@ -10,7 +10,9 @@ const MyPokemonPage = () => {
     const [myPokemons, setMyPokemons] = useState([]);
     useEffect(() => {
         if (localStorage !== undefined) {
-            setMyPokemons(JSON.parse(localStorage.getItem('myPokemon')))
+            if (JSON.parse(localStorage.getItem('myPokemon'))) {
+                setMyPokemons(JSON.parse(localStorage.getItem('myPokemon')))
+            }
         }
     }, [])
     return (
