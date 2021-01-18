@@ -9,9 +9,11 @@ const PokemonCardComponent = ({ pokemon }) => {
     }
     useEffect(() => {
         if (localStorage !== undefined) {
-            setOwned(JSON.parse(
-                localStorage.getItem('myPokemon'))
-                .filter(pokemonFilter).length)
+            if (JSON.parse(localStorage.getItem('myPokemon'))) {
+                setOwned(JSON.parse(
+                    localStorage.getItem('myPokemon'))
+                    .filter(pokemonFilter).length)
+            }
         }
     })
     return (
