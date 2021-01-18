@@ -6,7 +6,9 @@ const NavbarComponent = () => {
     const [myPokeLength, setLength] = useState(0)
     useEffect(() => {
         if (localStorage !== undefined) {
-            setLength(JSON.parse(localStorage.getItem('myPokemon')).length)
+            if (JSON.parse(localStorage.getItem('myPokemon'))) {
+                setLength(JSON.parse(localStorage.getItem('myPokemon')).length)
+            }
         }
     })
     return (
