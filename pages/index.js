@@ -1,65 +1,56 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Button, Col } from 'react-bootstrap';
+import { client, GET_POKEMONS_QUERY } from '../api';
 
-export default function Home() {
+const Layout = dynamic(() => import('../components/Layout'));
+const PokemonCard = dynamic(() => import('../components/PokemonCard'));
+
+const HomePage = () => {
+  const [pokemons, setPokemons] = useState([])
+  const [count, setCount] = useState(9999);
+  const [limit, setLimit] = useState(24);
+  const [offset, setOffset] = useState(0);
+  const getPokemons = async () => {
+    const { data } = await client.query({
+      query: GET_POKEMONS_QUERY,
+      variables: {
+        limit,
+        offset
+      }
+    })
+    if (data) {
+      setCount(data.pokemons.count);
+      setPokemons([...pokemons, ...data.pokemons.results])
+    }
+  }
+
+  const loadMore = (e) => {
+    e.preventDefault();
+    if (offset + limit <= count) {
+      setOffset(offset + limit);
+    }
+  }
+
+  useEffect(() => {
+    getPokemons();
+  }, [offset]);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+    <Layout>
+      <Container style={{ paddingTop: '3vh' }}>
+        <Row>
+          {pokemons && pokemons.map(pokemon => (
+            <PokemonCard pokemon={pokemon} key={pokemon.id} />
+          ))}
+        </Row>
+        <Row className="px-5 my-4 justify-content-center">
+          {offset + limit <= count && <Button variant="primary" className="py-3 text-center w-100 font-weight-bold" onClick={loadMore}>LOAD MORE</Button>}
+        </Row>
+      </Container>
+    </Layout>
   )
 }
+
+export default HomePage;

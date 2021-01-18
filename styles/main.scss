@@ -1,0 +1,33 @@
+@import 'base';
+
+.heading {
+    letter-spacing: 3px;
+    font-weight: bold;
+    color: $primary;
+}
+
+.pokemon-card {
+    color: $primary-darker;
+    letter-spacing: 2px;
+    .row {
+        border: 1px solid $primary-lighter;
+        border-radius: 5px;
+        &:hover {
+            box-shadow: 1px 0px 5px $primary-lighter;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            background: $primary;
+            border: none;
+        }
+    }
+}
+
+.info-wrapper {
+    border: 1px solid $primary-darker;
+    padding: 1rem;
+    color: $primary-darker;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    border-radius: 5px;
+}
